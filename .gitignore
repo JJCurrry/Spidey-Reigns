@@ -1,0 +1,28 @@
+# 依赖与构建产物
+node_modules/
+dist/
+coverage/
+.vite/
+
+# Vite 每次运行都会重新生成的临时文件（不是源码，勿入库）
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 编辑器与系统
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+
+# husky 生成的内部目录
+.husky/_/
+
+# 美术资源原始文件（AI 生成的中间产物、PSD 等，不入库）
+# 注意：最终用于游戏的资源放 public/assets/，是需要入库的
+assets/_raw/
+assets/_source/

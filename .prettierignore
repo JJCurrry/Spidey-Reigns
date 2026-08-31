@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+package-lock.json
+.husky/_
+public
+
+# Vite 运行期临时文件
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
+
+# Markdown 与制品文档不参与格式化检查：中文排版由人把关，避免工具无谓改动制造 diff 噪音
+*.md
+docs

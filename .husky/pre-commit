@@ -1,0 +1,34 @@
+# 本文件由 husky 的 .husky/_/pre-commit 唤起，不需要 shebang。
+#
+# 为什么有这段 PATH 处理：Git 钩子运行时**不继承交互式 shell 的 PATH**，
+# 所以 node / npx 在终端里能用、在钩子里却报 "command not found"。
+# 这里把常见 node 安装位置补进 PATH，再直接调用本地 lint-staged 入口
+# （不走 npx，避免联网解析、也更快更可离线）。
+
+for dir in \
+  "/c/Program Files/nodejs" \
+  "/c/Program Files (x86)/nodejs" \
+  "$HOME/.workbuddy/binaries/node/versions/22.22.2"
+do
+  if [ -d "$dir" ]; then
+    PATH="$dir:$PATH"
+  fi
+done
+
+# nvm 用户：目录结构是 versions/node/<版本>/bin，取最新一个版本
+if [ -d "$HOME/.nvm/versions/node" ]; then
+  latest=$(ls -1 "$HOME/.nvm/versions/node" 2>/dev/null | tail -1)
+  if [ -n "$latest" ]; then
+    PATH="$HOME/.nvm/versions/node/$latest/bin:$PATH"
+  fi
+fi
+
+export PATH
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "pre-commit 中止：PATH 中找不到 node。" >&2
+  echo "请在 .husky/pre-commit 顶部的候选目录列表里补上你的 node 安装路径。" >&2
+  exit 1
+fi
+
+exec node node_modules/lint-staged/bin/lint-staged.js
