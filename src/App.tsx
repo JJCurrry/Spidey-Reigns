@@ -1,26 +1,31 @@
-import { STAT_LABELS } from './content/constants';
-import { INITIAL_STATS } from './core/stats';
-import { STAT_KEYS } from './core/types';
+import { useMemo, useState } from 'react';
+import { ReignGame } from './ui/ReignGame';
+import { makeSeed } from './ui/seed';
+import { availableCards } from './content/unlocks';
+import { loadSave, recordAndPersist } from './save/storage';
+import type { SaveData } from './save/migrate';
 import './styles/global.css';
 
 /**
- * M0 占位界面。
- * 玩法 UI（卡牌、滑动手势、指标条、结局页）属于 M1，见 docs/接力文件.md 的「下一步指令」。
- * 本组件存在的唯一目的是让构建与 UI 测试链路可跑通（四道门之一）。
+ * 顶层装配：持有「当前局的种子」与「跨会话存档」。
+ * - 种子由最外层注入（src/ui/seed.ts，用 crypto，不触发不变量 #1）。
+ * - 解锁进度来自存档：已死局数 → 可用卡组（availableCards），换种子即重挂载用新卡组。
+ * - 死亡时记录存档（含结局图鉴），下次开局的卡组随之扩大。
  */
 export default function App() {
+  const [seed, setSeed] = useState<number>(() => makeSeed());
+  const [save, setSave] = useState<SaveData>(() => loadSave());
+
+  const deck = useMemo(() => availableCards(save.seenDeaths.length), [save.seenDeaths.length]);
+
   return (
-    <main className="app">
-      <h1 className="app__title">蛛丝王权</h1>
-      <p className="app__hint">M0 初始化占位 · 玩法界面属于 M1</p>
-      <ul className="app__stats">
-        {STAT_KEYS.map((key) => (
-          <li key={key} className="app__stat">
-            <span className="app__stat-label">{STAT_LABELS[key]}</span>
-            <span className="app__stat-value">{INITIAL_STATS[key]}</span>
-          </li>
-        ))}
-      </ul>
-    </main>
+    // key={seed}：不同种子 = 不同挂载，保证 useReign 首抽只发生一次（同种子同局）。
+    <ReignGame
+      key={seed}
+      seed={seed}
+      cards={deck}
+      onDeath={(death, turns) => setSave((prev) => recordAndPersist(prev, death.id, turns))}
+      onRestart={() => setSeed(makeSeed())}
+    />
   );
 }

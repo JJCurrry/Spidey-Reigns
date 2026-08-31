@@ -1,7 +1,6 @@
 /**
- * UI 层冒烟测试。
- * 存在意义：证明 jsdom 环境、React 渲染与 jest-dom 匹配器这条测试链路是通的
- * （四道门之一 —— 测试体系）。M1 写真实界面时，组件测试照此结构扩展。
+ * App 冒烟测试：证明顶层装配把玩法界面渲染出来（四指标条 + 当前事件卡）。
+ * 链路：App → ReignGame → useReign（core）→ StatBars / CardView，全部可跑通。
  */
 
 import { render, screen } from '@testing-library/react';
@@ -9,10 +8,10 @@ import { describe, expect, it } from 'vitest';
 import App from './App';
 
 describe('App（UI 冒烟）', () => {
-  it('渲染标题与四指标初始值', () => {
+  it('渲染四指标条与当前事件卡', () => {
     render(<App />);
-    expect(screen.getByText('蛛丝王权')).toBeInTheDocument();
-    expect(screen.getByText('市民')).toBeInTheDocument();
-    expect(screen.getAllByText('50')).toHaveLength(4);
+    expect(screen.getAllByRole('meter')).toHaveLength(4);
+    expect(screen.getByLabelText('当前事件卡')).toBeInTheDocument();
+    expect(screen.getByLabelText('滑动或按左右方向键做抉择')).toBeInTheDocument();
   });
 });
