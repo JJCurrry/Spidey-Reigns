@@ -229,3 +229,60 @@ body {
 .ending__again:hover {
   background: var(--ink-soft);
 }
+
+.ending__actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ending__codex {
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+  background: transparent;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.ending__codex:hover {
+  background: rgba(43, 33, 24, 0.08);
+}
+
+.ending__exit {
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+  background: transparent;
+  border: 2px solid var(--ink-soft);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.ending__exit:hover {
+  background: rgba(43, 33, 24, 0.08);
+}
+
+/* ---------- 顶栏图鉴入口 ---------- */
+.reign__topbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.reign__codex-btn {
+  padding: 0.35rem 1.1rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: transparent;
+  border: 2px solid var(--ink-soft);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.reign__codex-btn:hover {
+  background: rgba(43, 33, 24, 0.08);
+}
