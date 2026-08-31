@@ -1,17 +1,15 @@
 :root {
-  --bg: #12121a;
-  --fg: #f2f2f5;
-  --muted: #8a8a9c;
-  --accent: #e8484f;
+  /* Reigns 式中世纪手绘质感：羊皮纸底 + 墨色字 + 低饱和。 */
+  --bg: #e9dcc0;
+  --bg-2: #ddcca6;
+  --ink: #2b2118;
+  --ink-soft: #5c4d3a;
+  --edge-low: #9c3b2e; /* 濒临 0：枯败红 */
+  --edge-high: #b07d2b; /* 濒临 100：过载赭 */
+  --paper-line: #c9b485;
 
-  color-scheme: dark;
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    'PingFang SC',
-    'Microsoft YaHei',
-    sans-serif;
+  color-scheme: light;
+  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Songti SC', 'STSong', Georgia, serif;
 }
 
 * {
@@ -24,51 +22,199 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg);
-  color: var(--fg);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 27px, var(--paper-line) 27px 28px),
+    radial-gradient(circle at 50% 0%, var(--bg) 0%, var(--bg-2) 100%);
+  color: var(--ink);
 }
 
-.app {
-  text-align: center;
-  padding: 2rem;
-}
-
-.app__title {
-  margin: 0;
-  font-size: 2rem;
-  letter-spacing: 0.2em;
-}
-
-.app__hint {
-  margin: 0.5rem 0 2rem;
-  color: var(--muted);
-  font-size: 0.875rem;
-}
-
-.app__stats {
+/* ---------- 布局 ---------- */
+.reign {
+  width: min(34rem, 92vw);
+  padding: 1.25rem;
   display: flex;
-  gap: 1.25rem;
-  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reign__stage {
+  position: relative;
+  min-height: 22rem;
+}
+
+/* ---------- 指标条 ---------- */
+.stat-bars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.app__stat {
+.stat-bars__item {
+  display: grid;
+  grid-template-columns: 2rem auto 1fr;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stat-bars__icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+}
+
+.stat-bars__label {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.stat-bars__track {
+  height: 0.55rem;
+  background: rgba(43, 33, 24, 0.15);
+  border: 1px solid var(--ink-soft);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.stat-bars__fill {
+  display: block;
+  height: 100%;
+  background: var(--ink-soft);
+  transition: width 0.35s ease;
+}
+
+.stat-bars__item.is-low .stat-bars__fill {
+  background: var(--edge-low);
+}
+.stat-bars__item.is-high .stat-bars__fill {
+  background: var(--edge-high);
+}
+
+/* ---------- 卡面 + 滑动 ---------- */
+.swipe-area {
+  outline: none;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.swipe-area:focus-visible {
+  box-shadow: 0 0 0 2px var(--ink-soft);
+  border-radius: 0.75rem;
+}
+
+.swipe-area__card {
+  transition: transform 0.18s ease;
+  will-change: transform;
+}
+
+.card-view {
+  background: #f3e9d2;
+  border: 2px solid var(--ink);
+  border-radius: 0.75rem;
+  padding: 1.1rem;
+  box-shadow: 4px 4px 0 var(--ink-soft);
+  min-height: 19rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  min-width: 3.5rem;
+  gap: 0.75rem;
 }
 
-.app__stat-label {
-  color: var(--muted);
-  font-size: 0.75rem;
+.card-view__speaker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-view__avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  flex: none;
+}
+
+.card-view__speaker-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.card-view__text {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.card-view__outcome {
+  margin: 0;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  border-left: 3px solid var(--paper-line);
+  padding-left: 0.6rem;
+}
+
+.card-view__choices {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.card-view__choice-hint {
+  font-weight: 700;
+  margin: 0 0.25rem;
+}
+
+/* ---------- 结局页 ---------- */
+.ending {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  background: rgba(233, 220, 192, 0.96);
+  border: 2px solid var(--ink);
+  border-radius: 0.75rem;
+  box-shadow: 4px 4px 0 var(--ink-soft);
+}
+
+.ending__eyebrow {
+  margin: 0;
+  font-size: 0.8rem;
   letter-spacing: 0.1em;
+  color: var(--ink-soft);
 }
 
-.app__stat-value {
-  font-size: 1.5rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--accent);
+.ending__title {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.ending__text {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 26rem;
+}
+
+.ending__again {
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--bg);
+  background: var(--ink);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.ending__again:hover {
+  background: var(--ink-soft);
 }
