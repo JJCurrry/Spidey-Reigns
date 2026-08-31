@@ -1,5 +1,5 @@
 {
-  "name": "spidey-regins",
+  "name": "spidey-reigns",
   "private": true,
   "version": "0.1.0",
   "description": "蛛丝王权 —— 以蜘蛛侠为主角的 Reigns 式滑卡治国游戏（个人练习项目，不公开发布，见 docs/adr/ADR-0006-IP边界.md）",
@@ -20,7 +20,10 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "verify": "npm run typecheck && npm run lint && npm run test",
-    "prepare": "husky"
+    "prepare": "husky && node scripts/husky-prepare.mjs",
+    "git:backup": "sh scripts/git-backup.sh",
+    "git:restore": "sh scripts/restore-git.sh",
+    "git:doctor": "sh scripts/git-doctor.sh"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

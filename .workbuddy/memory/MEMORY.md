@@ -54,3 +54,7 @@
   排查用 `npm run deps:check`（`scripts/check-deps.mjs`），修复用 `rm -rf node_modules/<包名> && npm install`。
   注意该脚本只读 `main`，对 `exports` 优先的 ESM 包会误报。
 - Vite 每次运行生成 `vite.config.ts.timestamp-*.mjs`，已进 .gitignore 与 .prettierignore。
+- **沙箱会清工作树根 `.git`**（提交时整目录消失，已发生三次，根因是清理按 `Spidey-Reigns/.git` 路径删元数据，非 husky 钩子）。
+  根治：真实 git 数据 relocate 到 `.workbuddy/git-data/spidey-reigns-git`，工作树根只留 `.git` 指针文件（必须 Windows 绝对路径 `C:/...`）。
+  恢复：`npm run git:restore`；每次提交后 `.husky/post-commit` 自动刷新桌面 `Spidey-Reigns-gitbackup.bundle`。
+  钩子 `prepare` 已改为 `husky && node scripts/husky-prepare.mjs`，强制绝对 `core.hooksPath`（否则外置 gitdir 下相对路径失效）。详情见各日期日志与 `scripts/`。
