@@ -4,6 +4,10 @@
  * 术语表：「死亡」是内容，不是失败惩罚。四指标 × 双向 = 8 个边界结局必须齐全，
  * 否则 evaluateDeath 会在运行时抛错（由 __tests__/content.test.ts 在 CI 中拦截）。
  *
+ * M1-b：四指标语义重构（ADR-0008）后，边界结局 id 改为 death-media-* / death-villains-*，
+ * 文案按新语义重写。特殊死法 death-exhausted-vow 保留（由 card-exhausted-vow 触发）；
+ * 另两个特殊死法 death-unmasked / death-hero-falls 属于 M1-e 扩充。
+ *
  * 边界结局 id 的格式是硬约定：`death-<指标键>-<min|max>`，见 src/core/game.ts。
  */
 
@@ -21,24 +25,24 @@ export const DEATHS = [
     text: '每一个路口都有人在等你自己走出来。你成了这座城市的日程表，再也不是它的人。',
   },
   {
-    id: 'death-reputation-min',
-    title: '全民公敌',
-    text: '头版登出了你的通缉令，措辞比事实更有说服力。从此你救下的每一个人，都会在镜头前改口。',
+    id: 'death-media-min',
+    title: '被抹去',
+    text: '号角日报的版面换成了星座运势。你救下的人接受采访，镜头扫过你时，主持人说「这位是谁来着」。你还在救人，只是故事不再有你的名字。',
   },
   {
-    id: 'death-reputation-max',
-    title: '镜头里的英雄',
-    text: '你开始挑角度落地。掌声太响了，你再也分不清自己在救人，还是在救自己的海报。',
+    id: 'death-media-max',
+    title: '真人秀主角',
+    text: '你的每一次出击都被提前直播。镜头比反派更懂怎么逼你出拳。你开始为收视率挑对手——观众爱看，你也停不下来。',
   },
   {
-    id: 'death-order-min',
+    id: 'death-villains-min',
+    title: '下一个威胁',
+    text: '你把最后一名反派送进了监狱。第二天，头条写的是「谁还需要蒙面人」。城市开始数你救过的人里，有几个其实是你自己惹出来的祸。',
+  },
+  {
+    id: 'death-villains-max',
     title: '无主之城',
-    text: '街区被分完了，地盘上插着别人的标记。你还在荡网，只是不知道该往哪儿落。',
-  },
-  {
-    id: 'death-order-max',
-    title: '蛛网铁幕',
-    text: '每条街巷都在你的监听之下，犯罪率归零。人们不再抬头——他们学会了压低声音走路。',
+    text: '街区被分完了，每块地盘上插着别人的标记。你还在荡网，只是不知道该往哪儿落。反派不再躲你——他们现在怕的是彼此。',
   },
   {
     id: 'death-life-min',

@@ -10,10 +10,10 @@ import type { StatKey } from '../core/types';
 /** 存档格式版本。结构变更时必须 +1，并同步实现迁移（M2 存档落地时）。 */
 export const SAVE_VERSION = 1;
 
-/** 四指标的中文展示名。顺序与 STAT_KEYS 一致。 */
+/** 四指标的中文展示名。顺序与 STAT_KEYS 一致。语义见 ADR-0008。 */
 export const STAT_LABELS: Record<StatKey, string> = {
   civilians: '市民',
-  reputation: '声誉',
-  order: '秩序',
-  life: '生活',
+  media: '媒体',
+  villains: '反派',
+  life: '私人生活',
 };

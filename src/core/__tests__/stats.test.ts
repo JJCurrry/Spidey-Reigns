@@ -17,13 +17,13 @@ describe('指标结算（不变量 #3：四指标恒为 0–100 整数）', () =
   it('applyEffect 后四指标恒在 [0,100] —— 极端效果也不越界', () => {
     const after = applyEffect(INITIAL_STATS, {
       civilians: -9999,
-      reputation: 9999,
-      order: 49,
+      media: 9999,
+      villains: 49,
       life: 0,
     });
     expect(after.civilians).toBe(STAT_MIN);
-    expect(after.reputation).toBe(STAT_MAX);
-    expect(after.order).toBe(99);
+    expect(after.media).toBe(STAT_MAX);
+    expect(after.villains).toBe(99);
     expect(after.life).toBe(50);
   });
 
@@ -35,12 +35,12 @@ describe('指标结算（不变量 #3：四指标恒为 0–100 整数）', () =
 
   it('findBreach 在触及 0 或 100 时返回对应边界', () => {
     expect(findBreach({ ...INITIAL_STATS, life: 0 })).toEqual({ key: 'life', side: 'min' });
-    expect(findBreach({ ...INITIAL_STATS, order: 100 })).toEqual({ key: 'order', side: 'max' });
+    expect(findBreach({ ...INITIAL_STATS, villains: 100 })).toEqual({ key: 'villains', side: 'max' });
   });
 
   it('findBreach 在安全区间返回 null', () => {
     expect(findBreach(INITIAL_STATS)).toBeNull();
-    expect(findBreach({ ...INITIAL_STATS, civilians: 1, reputation: 99 })).toBeNull();
+    expect(findBreach({ ...INITIAL_STATS, civilians: 1, media: 99 })).toBeNull();
   });
 
   it('初始值四指标均为 50，键集合与 STAT_KEYS 完全一致', () => {

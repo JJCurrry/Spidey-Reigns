@@ -2,8 +2,8 @@
  * 卡牌内容。只放数据 —— 出现任何函数或控制流，说明该逻辑属于 src/core/，应下沉。
  * （不变量 #4；内容表达方式见 docs/adr/ADR-0003-内容以类型化常量驱动.md）
  *
- * M0 只放 7 张种子卡，用途是把抽卡 / 去重 / 兜底 / 条件 / 特殊死亡五条机制跑通并钉死测试。
- * 正式的 40 张内容属于 M1，见 docs/接力文件.md。
+ * M1-b：四指标语义重构（ADR-0008）后，把种子卡的效果键从 reputation/order 改为
+ * media/villains。正式的 40 张内容扩充属于 M1-e，见 docs/工单/T-002.md。
  */
 
 import type { Card } from '../core/types';
@@ -15,12 +15,12 @@ export const CARDS = [
     text: '号角日报头版又是你：「蛛形威胁」。他在电视上用手指戳着你的照片。',
     left: {
       text: '开一场记者会澄清',
-      effect: { reputation: 8, life: -6 },
+      effect: { media: 8, life: -6 },
       outcome: '你说完了。第二天头版写着：「蒙面者狡辩两小时」。',
     },
     right: {
       text: '不解释，继续巡逻',
-      effect: { reputation: -10, civilians: 8 },
+      effect: { media: -10, civilians: 8 },
       outcome: '你救下了一整条街。没人知道是谁，包括詹姆森。',
     },
   },
@@ -30,12 +30,12 @@ export const CARDS = [
     text: '第二大道银行被劫，五名人质。你已经三十个小时没合眼了。',
     left: {
       text: '现在就出发',
-      effect: { civilians: 10, order: 6, life: -12 },
+      effect: { civilians: 10, villains: 6, life: -12 },
       outcome: '五个人平安回家。你在天台上坐到天亮，手指一直在抖。',
     },
     right: {
       text: '交给警队处理',
-      effect: { civilians: -10, order: -4, life: 8 },
+      effect: { civilians: -10, villains: -4, life: 8 },
       outcome: '你睡了六个小时。新闻里的人质名单多了一个名字。',
     },
   },
@@ -59,12 +59,12 @@ export const CARDS = [
     text: '左手发射器在昨夜的追逐里卡了壳。工作台上的零件摊了一地。',
     left: {
       text: '花一整晚修好它',
-      effect: { order: 8, life: -8 },
+      effect: { villains: 8, life: -8 },
       outcome: '校准到凌晨四点。它现在比你更可靠。',
     },
     right: {
       text: '凑合着用',
-      effect: { order: -8, life: 6 },
+      effect: { villains: -8, life: 6 },
       outcome: '你提前躺下。梦里全是没抓住的手。',
     },
   },
@@ -76,13 +76,13 @@ export const CARDS = [
     weight: 2,
     left: {
       text: '先救人',
-      effect: { civilians: 12, reputation: -8, order: -6 },
+      effect: { civilians: 12, media: -8, villains: -6 },
       flag: 'flag-spared-goblin',
       outcome: '他站在楼顶看着你把最后一个人放下，鼓了三下掌。',
     },
     right: {
       text: '追上去',
-      effect: { reputation: 10, civilians: -8, order: 6 },
+      effect: { media: 10, civilians: -8, villains: 6 },
       outcome: '你们在钢梁之间撞了七次。他消失时，桥上还有人在等救援。',
     },
   },
@@ -97,7 +97,7 @@ export const CARDS = [
     },
     right: {
       text: '把战衣挂回衣柜',
-      effect: { reputation: -6 },
+      effect: { media: -6 },
       death: 'death-exhausted-vow',
     },
   },
@@ -105,7 +105,7 @@ export const CARDS = [
     id: 'card-quiet-night',
     text: '今晚的纽约罕见地安静。',
     fallback: true,
-    left: { text: '多巡两个街区', effect: { order: 6, life: -6 } },
-    right: { text: '早点回去', effect: { order: -6, life: 6 } },
+    left: { text: '多巡两个街区', effect: { villains: 6, life: -6 } },
+    right: { text: '早点回去', effect: { villains: -6, life: 6 } },
   },
 ] as const satisfies readonly Card[];

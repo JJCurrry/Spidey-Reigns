@@ -8,11 +8,11 @@ import { STAT_KEYS, type Effect, type StatKey, type Stats } from './types';
 export const STAT_MIN = 0;
 export const STAT_MAX = 100;
 
-/** 一局起始值。四个指标都是 50 —— 中点出发，两边都是悬崖。 */
+/** 一局起始值。四个指标都是 50 —— 中点出发，两边都是悬崖。语义见 ADR-0008。 */
 export const INITIAL_STATS: Stats = {
   civilians: 50,
-  reputation: 50,
-  order: 50,
+  media: 50,
+  villains: 50,
   life: 50,
 };
 

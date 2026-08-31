@@ -3,8 +3,11 @@
  * 术语以 docs/术语表.md 为准（尤其注意「指标」是双向倒计时，不是血条）。
  */
 
-/** 四指标键。**数组顺序即 UI 展示顺序，勿随意调整**。 */
-export const STAT_KEYS = ['civilians', 'reputation', 'order', 'life'] as const;
+/**
+ * 四指标键。**数组顺序即 UI 展示顺序，勿随意调整**。
+ * 语义见 ADR-0008：市民 / 媒体 / 反派 / 私人生活，四者都是「外部势力 + 一个私人自我」。
+ */
+export const STAT_KEYS = ['civilians', 'media', 'villains', 'life'] as const;
 
 export type StatKey = (typeof STAT_KEYS)[number];
 
