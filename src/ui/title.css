@@ -1,0 +1,80 @@
+/* 标题屏：复用全局羊皮纸/墨色主题（见 global.css 的 --bg / --ink 等 token）。 */
+
+.title {
+  width: min(34rem, 92vw);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: center;
+}
+
+.title__portrait {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.title__avatar {
+  width: min(11rem, 56vw);
+  height: min(11rem, 56vw);
+  border-radius: 1rem;
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink-soft);
+  background: rgba(255, 255, 255, 0.4);
+  object-fit: cover;
+}
+
+.title__name {
+  margin: 0;
+  font-size: 2.6rem;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  text-shadow: 2px 2px 0 var(--bg-2);
+}
+
+.title__subtitle {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
+}
+
+.title__actions {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.title__start {
+  padding: 0.7rem 2rem;
+  font-family: inherit;
+  font-size: 1.1rem;
+  color: var(--bg);
+  background: var(--ink);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.title__start:hover {
+  background: var(--ink-soft);
+}
+
+.title__codex {
+  padding: 0.7rem 1.6rem;
+  font-family: inherit;
+  font-size: 1.1rem;
+  color: var(--ink);
+  background: transparent;
+  border: 2px solid var(--ink-soft);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.title__codex:hover {
+  background: rgba(43, 33, 24, 0.08);
+}
