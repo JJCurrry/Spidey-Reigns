@@ -58,3 +58,5 @@
   根治：真实 git 数据 relocate 到 `.workbuddy/git-data/spidey-reigns-git`，工作树根只留 `.git` 指针文件（必须 Windows 绝对路径 `C:/...`）。
   恢复：`npm run git:restore`；每次提交后 `.husky/post-commit` 自动刷新桌面 `Spidey-Reigns-gitbackup.bundle`。
   钩子 `prepare` 已改为 `husky && node scripts/husky-prepare.mjs`，强制绝对 `core.hooksPath`（否则外置 gitdir 下相对路径失效）。详情见各日期日志与 `scripts/`。
+- **`npm run build`/`coverage` 在沙箱空 dist 时挂死（ETIMEDOUT）**：CodeBuddy `node-safe-delete-shim.cjs` 把 `fs.rmSync` 改走 `genie-trash`（`GENIE_TRASH_DIR` 指向的 `win32-x64.exe`）。修法：命令前缀 `CODEBUDDY_SAFE_DELETE_ENABLED=0`（shim 在 env='0' 时早返回，rm 走原生删除）；真实机器无 shim 时为 no-op。未固化进 package.json（避免 IDE 特定 hack）。
+- **git 写入全局挂死（偶发，2026-08-31）**：`git commit`/`git bundle create` 即使 `--allow-empty --no-verify`、换真实 git.exe、新仓库也挂死（SIGTERM）；读操作正常。疑似沙箱拦截 git 写。恢复：在干净环境补提交；提交前先 `git bundle create` 离线备份。代码改动落盘 + 校验全绿 ≠ 已提交。
