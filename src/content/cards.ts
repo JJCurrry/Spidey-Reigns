@@ -413,4 +413,279 @@ export const CARDS = [
       outcome: '你翻出窗外。生日愿望，是希望明天不用再过生日。',
     },
   },
+
+  // ---------------- 城市大事件（条件触发） ----------------
+  {
+    id: 'card-blackout',
+    text: '全城停电了。黑暗里，只有你的蛛丝还在反光。',
+    condition: { minTurn: 15 },
+    left: {
+      text: '守在变电站',
+      effect: { civilians: 10, villains: -6, life: -6 },
+      outcome: '你用身体顶住闸刀两小时。灯亮时，没人知道你也在。',
+    },
+    right: {
+      text: '趁黑巡逻',
+      effect: { villains: 10, civilians: -4, life: 4 },
+      outcome: '停电的三小时，犯罪率没升。代价是你的膝盖。',
+    },
+  },
+  {
+    id: 'card-ferry-crisis',
+    text: '渡轮在河心裂开，两岸的孩子都在哭。',
+    condition: { minTurn: 25 },
+    left: {
+      text: '织一张大网兜住',
+      effect: { civilians: 14, life: -12 },
+      outcome: '船没沉。你挂在钢索上，像一面被拉到极限的旗。',
+    },
+    right: {
+      text: '分批撤离',
+      effect: { civilians: 8, media: 6, life: 4 },
+      outcome: '你一船一船送。最后一个人上岸时，天已经白了。',
+    },
+  },
+  {
+    id: 'card-mayor-speech',
+    speaker: '市长',
+    text: '「我提议立法，给蒙面义警发牌照。当然，前提是先摘下面具。」',
+    left: {
+      text: '公开反对',
+      effect: { media: 8, civilians: 6, villains: 4 },
+      outcome: '你站在市政厅顶上举牌。第二天，法案被压了下去。',
+    },
+    right: {
+      text: '保持沉默',
+      effect: { media: -10, villains: 6 },
+      outcome: '你没出声。法案过了初审，只是执行人换成了别人。',
+    },
+  },
+  {
+    id: 'card-goblin-return',
+    speaker: '绿魔',
+    text: '「上次你放了我一马。这次，我带了整座游乐场的人质。」',
+    once: true,
+    condition: { flags: ['flag-spared-goblin'], minTurn: 20 },
+    left: {
+      text: '先救人质',
+      effect: { civilians: 14, media: -8, life: -10 },
+      flag: 'flag-goblin-final',
+      outcome: '你救下所有人。他在广播里笑：「你果然还是先救人。」',
+    },
+    right: {
+      text: '直取绿魔',
+      effect: { media: 10, villains: 12, life: -6 },
+      outcome: '你们撞进摩天轮。它停转时，他不在了，孩子都安全了。',
+    },
+  },
+  {
+    id: 'card-goblin-finale',
+    speaker: '绿魔',
+    text: '他只剩最后一口气，却把起爆器塞进了自己的口袋：「一起走，好不好？」',
+    once: true,
+    condition: { flags: ['flag-goblin-final'], minTurn: 30 },
+    left: {
+      text: '抢下起爆器',
+      effect: { civilians: 10, villains: 12, life: -10 },
+      outcome: '你扑过去。爆炸的气浪把你掀出三米，他留在了原地。',
+    },
+    right: {
+      text: '拉他一起跳',
+      effect: { civilians: -6, life: -14 },
+      death: 'death-hero-falls',
+    },
+  },
+
+  // ---------------- 指标临界预警卡（贴近边界时给叙事预告） ----------------
+  {
+    id: 'card-civilians-worship',
+    text: '街角立起了你的等身雕像，底座刻着「我们的王」。有人开始朝它下跪。',
+    condition: { stats: { civilians: { min: 85 } } },
+    left: {
+      text: '推倒雕像',
+      effect: { civilians: -16, media: 6 },
+      outcome: '你亲手推的。人群安静得可怕，然后有人开始鼓掌。',
+    },
+    right: {
+      text: '留着',
+      effect: { civilians: 6, media: 8 },
+      outcome: '你没动。第二天，雕像戴上了真的战衣。',
+    },
+  },
+  {
+    id: 'card-media-invisible',
+    text: '你已经两周没出现在任何报道里了。连詹姆森都换了头条。',
+    condition: { stats: { media: { max: 20 } } },
+    left: {
+      text: '制造一次露面',
+      effect: { media: 14, life: -4 },
+      outcome: '你在对着镜头摆了个Pose。镜子里的自己有点陌生。',
+    },
+    right: {
+      text: '享受清静',
+      effect: { media: -6, life: 8 },
+      outcome: '你睡了整觉。梦里没有镜头，只有梅姨的汤。',
+    },
+  },
+  {
+    id: 'card-villains-cleared',
+    text: '监狱满了，反派没了。城市开始把通缉令换成你的证件照。',
+    condition: { stats: { villains: { max: 18 } } },
+    left: {
+      text: '提醒他们你不是威胁',
+      effect: { villains: 10, civilians: -8 },
+      outcome: '你摘下半张面具开会。会后，你的照片仍在通缉栏。',
+    },
+    right: {
+      text: '暂时离开',
+      effect: { villains: -8, life: 8 },
+      outcome: '你去了别的城市。这里的头条，换成了别的热闹。',
+    },
+  },
+  {
+    id: 'card-life-erased',
+    text: '彼得·帕克这个名字，从所有档案里消失了。连校友录都找不到你。',
+    condition: { stats: { life: { max: 18 } } },
+    left: {
+      text: '找回自己',
+      effect: { life: 16, civilians: -6 },
+      outcome: '你去派出所改了回名字。盖章的那下，手是稳的。',
+    },
+    right: {
+      text: '就此消失',
+      effect: { life: -6, media: 6 },
+      outcome: '你删掉了最后一张合影。从此，只有蜘蛛侠还在。',
+    },
+  },
+
+  // ---------------- 日常卡（维持节奏，弱效果） ----------------
+  {
+    id: 'card-rooftop-lunch',
+    text: '你在天台上吃三明治，对面大楼的清洁工跟你挥了挥手。',
+    left: {
+      text: '挥手回去',
+      effect: { life: 4, civilians: 2 },
+      outcome: '你们隔空碰了碰三明治。这一刻，谁也不是英雄。',
+    },
+    right: {
+      text: '继续监视',
+      effect: { villains: 2, life: -2 },
+      outcome: '你放下三明治，重新盯住了街角。手还是僵的。',
+    },
+  },
+  {
+    id: 'card-fan-letter',
+    speaker: '一封手写信',
+    text: '「我本来想跳楼的。但看了你救人的视频，我决定再看一天。」',
+    left: {
+      text: '回一封信',
+      effect: { civilians: 6, life: 4 },
+      outcome: '你写了「明天也请你留下来」。字迹歪歪扭扭，像小学生。',
+    },
+    right: {
+      text: '不回',
+      effect: { media: 4, life: -2 },
+      outcome: '你把信折好放进口袋。那天你多巡了一个街区。',
+    },
+  },
+  {
+    id: 'card-broken-grapple',
+    text: '荡到半空时，主绳崩了——你靠备用绳翻了两个跟头才落地。',
+    left: {
+      text: '立刻返修',
+      effect: { villains: 4, life: -6 },
+      outcome: '你蹲在楼道里缝了一下午。线头比你想象的还多。',
+    },
+    right: {
+      text: '先用着',
+      effect: { villains: -4, life: 6 },
+      outcome: '你赌它撑得住。今晚风很大，你荡得比平时低。',
+    },
+  },
+  {
+    id: 'card-bodega-dog',
+    text: '杂货店的狗认得你了，每次路过都摇尾巴，老板也多塞给你一个苹果。',
+    left: {
+      text: '陪它玩一会',
+      effect: { life: 6, civilians: 2 },
+      outcome: '你蹲下来揉了揉它的头。老板说「你比新闻里亲切」。',
+    },
+    right: {
+      text: '别耽误',
+      effect: { villains: 2, life: -2 },
+      outcome: '你点了点头就走。苹果留在了柜台上。',
+    },
+  },
+  {
+    id: 'card-rain-patrol',
+    text: '雨把纽约浇成了水墨画。犯罪也跟着潮了，黏糊糊地冒头。',
+    left: {
+      text: '冒雨巡街',
+      effect: { villains: 6, civilians: 4, life: -4 },
+      outcome: '你湿透了，但三个扒手被你挂在路灯上晾干。',
+    },
+    right: {
+      text: '等雨停',
+      effect: { villains: -4, life: 6 },
+      outcome: '你缩在消防梯下。雨停时，街区已经安静了。',
+    },
+  },
+  {
+    id: 'card-graffiti-tribute',
+    speaker: '墙上的涂鸦',
+    text: '有人在你常出现的巷口画了幅你，旁边写「谢谢你还在这里」。',
+    left: {
+      text: '补一笔颜色',
+      effect: { civilians: 4, media: 4, life: 2 },
+      outcome: '你偷偷给那幅画描了边。第二天，它被人拍上了新闻。',
+    },
+    right: {
+      text: '不动它',
+      effect: { life: 2, civilians: 2 },
+      outcome: '你只是多看了两眼。那面墙，后来再没人乱涂。',
+    },
+  },
+  {
+    id: 'card-night-shift-nurse',
+    speaker: '夜班护士',
+    text: '「我值夜班，总能从窗口看见你荡过去。算我一个人的安心。」',
+    left: {
+      text: '冲她比个心',
+      effect: { life: 4, civilians: 4 },
+      outcome: '你比了。她笑出了声，又快步回了病房。',
+    },
+    right: {
+      text: '假装没看见',
+      effect: { life: -2, media: 4 },
+      outcome: '你低头荡过。她的窗，后来一直留着一盏小灯。',
+    },
+  },
+  {
+    id: 'card-skateboard-kid',
+    text: '一个小孩学你荡蛛丝，用滑板摔进了灌木丛，冲你喊「再演示一次」。',
+    left: {
+      text: '示范一遍',
+      effect: { civilians: 6, life: -4 },
+      outcome: '你慢慢荡了个弧线。他看呆了，忘了疼。',
+    },
+    right: {
+      text: '让他自己练',
+      effect: { civilians: -2, life: 4 },
+      outcome: '你摇摇头走了。他后来真的学会了，用的不是蛛丝。',
+    },
+  },
+  {
+    id: 'card-old-photo',
+    text: '钱包里那张本叔叔的照片边角卷了。你很久没敢打开它。',
+    left: {
+      text: '再看一眼',
+      effect: { life: 8, civilians: -2 },
+      outcome: '「能力越大责任越大。」你念出声，像第一次听见。',
+    },
+    right: {
+      text: '合上钱包',
+      effect: { life: -6, villains: 2 },
+      outcome: '你把钱包塞进最深的口袋。今晚，你出奇地狠。',
+    },
+  },
 ] as const satisfies readonly Card[];

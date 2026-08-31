@@ -9,6 +9,7 @@
 import { describe, expect, it } from 'vitest';
 import { CARDS } from '../../content/cards';
 import { DEATHS } from '../../content/deaths';
+import { UNLOCK_TIERS } from '../../content/unlocks';
 import { STAT_KEYS, type Card, type Choice, type StatKey } from '../types';
 
 // 显式向上转型为 Card：CARDS 是 as const 字面量元组，未声明的可选字段（如 fallback）
@@ -87,6 +88,30 @@ describe('内容完整性守卫（不变量 #4 / #5）', () => {
       for (const side of ['min', 'max'] as const) {
         expect(deathIds, `缺少边界结局 death-${key}-${side}`).toContain(`death-${key}-${side}`);
       }
+    }
+  });
+
+  it('解锁档位覆盖全部卡牌，且每张卡恰好属于一个档位（M1 解锁进度）', () => {
+    const allCardIds = new Set(cards.map((card) => card.id));
+    const seen = new Set<string>();
+    for (const tier of UNLOCK_TIERS) {
+      for (const id of tier.cardIds) {
+        expect(seen.has(id), `卡牌 ${id} 出现在多个解锁档位`).toBe(false);
+        seen.add(id);
+      }
+    }
+    expect(seen, '解锁档位未覆盖全部卡牌').toEqual(allCardIds);
+  });
+
+  it('解锁档位单调：minDeaths 非递减，且 tier-0 必含兜底卡且非空', () => {
+    const tiers = UNLOCK_TIERS;
+    expect(tiers[0]?.minDeaths).toBe(0);
+    expect(tiers[0]?.cardIds.length ?? 0).toBeGreaterThan(0);
+    expect(tiers[0]?.cardIds ?? []).toContain('card-quiet-night');
+    for (let i = 1; i < tiers.length; i += 1) {
+      const prev = tiers[i - 1];
+      const curr = tiers[i];
+      expect(curr?.minDeaths ?? 0).toBeGreaterThanOrEqual(prev?.minDeaths ?? 0);
     }
   });
 });
