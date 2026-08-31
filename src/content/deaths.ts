@@ -65,4 +65,19 @@ export const DEATHS = [
     title: '坠落的英雄',
     text: '你替他挡下了那一击，自己却没再站起来。城市为你降了半旗，反派替你写了悼词。没人知道你生前最想喝的，是梅姨那锅汤。',
   },
+  {
+    id: 'death-traded-places',
+    title: '交换',
+    text: '你推开他，自己撞进了那一击。坠落时你想，至少这一次，有人能活着讲这个故事。',
+  },
+  {
+    id: 'death-last-swing',
+    title: '最后一荡',
+    text: '你把最后一名孩子送到对岸，蛛丝却在半空断了。纽约的灯一盏盏亮起，没有一盏为你而亮。',
+  },
+  {
+    id: 'death-public-shame',
+    title: '全民围观',
+    text: '你摘下面具，求他们帮一把。镜头对准你的脸，弹幕刷着「真人秀主角」。没有人真的来。',
+  },
 ] as const satisfies readonly Death[];

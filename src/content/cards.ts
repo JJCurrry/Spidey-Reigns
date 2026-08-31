@@ -688,4 +688,105 @@ export const CARDS = [
       outcome: '你把钱包塞进最深的口袋。今晚，你出奇地狠。',
     },
   },
+
+  // ---------------- 机制延伸（M3-B）：MJ 线 / 毒液·绿魔链收尾 / 英勇牺牲线 ----------------
+  {
+    id: 'card-mj-rooftop',
+    speaker: '米歇尔·琼斯',
+    text: '米歇尔在楼顶拦住你：「彼得最近总失踪。你和他……是同一个人，对吗？」',
+    left: {
+      text: '承认',
+      effect: { life: 12, media: -6 },
+      flag: 'flag-mj-knows',
+      outcome: '她笑了笑：「我就知道。下次别一个人扛。」',
+    },
+    right: {
+      text: '否认',
+      effect: { life: -10, civilians: 4 },
+      outcome: '你摇了摇头。她没再追问，只是多看了你一眼。',
+    },
+  },
+  {
+    id: 'card-mj-choice',
+    speaker: '米歇尔·琼斯',
+    text: '有人用米歇尔的安全换你现身。视频里她被按在墙角，对面说：「摘下面具，或者看她掉下去。」',
+    once: true,
+    condition: { flags: ['flag-mj-knows'] },
+    left: {
+      text: '公开求援',
+      effect: { media: 12, civilians: -10 },
+      death: 'death-public-shame',
+    },
+    right: {
+      text: '独自营救',
+      effect: { villains: 10, life: -12 },
+      flag: 'flag-mj-rescued',
+      outcome: '你用蛛丝卷走她。镜头拍到的，只有一道红蓝的影子。',
+    },
+  },
+  {
+    id: 'card-venom-legacy',
+    speaker: '毒液',
+    text: '毒液残留还在你血液里低语。科研所想要样本，说能造出「可控的守护者」。',
+    once: true,
+    condition: { flags: ['flag-has-venom'] },
+    left: {
+      text: '交出样本',
+      effect: { villains: -10, media: 8, life: -4 },
+      outcome: '你抽了血。三天后头条写「义警血液或成新药」——你希望他们别成功。',
+    },
+    right: {
+      text: '彻底焚毁',
+      effect: { villains: -6, life: -8 },
+      outcome: '你烧掉了最后一滴。耳边安静了，可你总觉得少了点什么。',
+    },
+  },
+  {
+    id: 'card-goblin-echo',
+    text: '收音机里偶尔还能听见绿魔的笑。你分不清是回声，还是自己太累了。',
+    once: true,
+    condition: { flags: ['flag-goblin-final'] },
+    left: {
+      text: '去找医生',
+      effect: { life: 10, media: -4 },
+      outcome: '医生说是创伤后应激。你笑着说是「英雄的职业病」。',
+    },
+    right: {
+      text: '置之不理',
+      effect: { life: -8, villains: 4 },
+      outcome: '你关掉了收音机。可那笑声，关不掉。',
+    },
+  },
+  {
+    id: 'card-traded-hero',
+    text: '一个陌生的老人挡在失控的卡车前。你来得及，但得用身体替他垫下那一记撞击。',
+    once: true,
+    condition: { stats: { life: { max: 30 } } },
+    left: {
+      text: '替他挡下',
+      effect: { life: -16 },
+      death: 'death-traded-places',
+    },
+    right: {
+      text: '拉他避开',
+      effect: { life: -8, civilians: 10 },
+      outcome: '你们一起滚到路边。老人喘着气说「谢谢你，孩子」。',
+    },
+  },
+  {
+    id: 'card-last-swing',
+    text: '洪水漫过地铁站，最后一名孩子卡在扶梯底下。你的蛛丝已经起了毛刺。',
+    once: true,
+    condition: { stats: { life: { max: 20 } } },
+    left: {
+      text: '用身体护住',
+      effect: { life: -18 },
+      death: 'death-last-swing',
+    },
+    right: {
+      text: '先撤自己',
+      effect: { life: 6, villains: -6 },
+      outcome: '你退到安全处。孩子被后来的人救起——你告诉自己这就够了。',
+    },
+  },
 ] as const satisfies readonly Card[];

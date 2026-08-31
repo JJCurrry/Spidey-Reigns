@@ -68,6 +68,9 @@ export const UNLOCK_TIERS = [
       'card-media-invisible',
       'card-villains-cleared',
       'card-life-erased',
+      'card-mj-rooftop',
+      'card-traded-hero',
+      'card-last-swing',
     ],
   },
   {
@@ -79,12 +82,14 @@ export const UNLOCK_TIERS = [
       'card-venom-symbiote',
       'card-venom-control',
       'card-goblin-finale',
+      'card-mj-choice',
+      'card-venom-legacy',
     ],
   },
   {
     id: 'tier-3-loose-ends',
     minDeaths: 3,
-    cardIds: ['card-kingpin-betrayal'],
+    cardIds: ['card-kingpin-betrayal', 'card-goblin-echo'],
   },
 ] as const satisfies readonly UnlockTier[];
 

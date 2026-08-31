@@ -114,4 +114,20 @@ describe('内容完整性守卫（不变量 #4 / #5）', () => {
       expect(curr?.minDeaths ?? 0).toBeGreaterThanOrEqual(prev?.minDeaths ?? 0);
     }
   });
+
+  it('每条特殊死法（非四指标边界结局）至少被一张卡引用（保证可达，不是死代码）', () => {
+    const boundary = new Set<string>();
+    for (const key of STAT_KEYS) {
+      for (const side of ['min', 'max'] as const) {
+        boundary.add(`death-${key}-${side}`);
+      }
+    }
+    const specialDeaths = DEATHS.map((death) => death.id).filter((id) => !boundary.has(id));
+    for (const deathId of specialDeaths) {
+      const reachable = cards.some((card) =>
+        [card.left, card.right].some((choice) => choice.death === deathId),
+      );
+      expect(reachable, `特殊死法 ${deathId} 没有任何卡引用，玩家永远触达不到`).toBe(true);
+    }
+  });
 });
