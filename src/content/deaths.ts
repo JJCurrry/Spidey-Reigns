@@ -4,10 +4,6 @@
  * 术语表：「死亡」是内容，不是失败惩罚。四指标 × 双向 = 8 个边界结局必须齐全，
  * 否则 evaluateDeath 会在运行时抛错（由 __tests__/content.test.ts 在 CI 中拦截）。
  *
- * M1-b：四指标语义重构（ADR-0008）后，边界结局 id 改为 death-media-* / death-villains-*，
- * 文案按新语义重写。特殊死法 death-exhausted-vow 保留（由 card-exhausted-vow 触发）；
- * 另两个特殊死法 death-unmasked / death-hero-falls 属于 M1-e 扩充。
- *
  * 边界结局 id 的格式是硬约定：`death-<指标键>-<min|max>`，见 src/core/game.ts。
  */
 
@@ -58,5 +54,15 @@ export const DEATHS = [
     id: 'death-exhausted-vow',
     title: '力竭',
     text: '你松开了手指。坠落的时候你才想起，那句「能力越大责任越大」，从来没说你可以不睡觉。',
+  },
+  {
+    id: 'death-unmasked',
+    title: '面具落地',
+    text: '直播镜头对准了你掀起的面具。第二天全网都在转发那张脸。梅姨的门被敲响时，你已经在三千里外了。',
+  },
+  {
+    id: 'death-hero-falls',
+    title: '坠落的英雄',
+    text: '你替他挡下了那一击，自己却没再站起来。城市为你降了半旗，反派替你写了悼词。没人知道你生前最想喝的，是梅姨那锅汤。',
   },
 ] as const satisfies readonly Death[];

@@ -14,6 +14,15 @@ import { drawCard } from '../deck';
 import { findBreach, INITIAL_STATS, STAT_MAX, STAT_MIN } from '../stats';
 import type { Card, ReignState, Side } from '../types';
 import type { Rng } from '../rng';
+import { STAT_KEYS } from '../types';
+
+// 边界结局 = death-<指标>-<min|max>；其余都是内容设计的「特殊死法」，也属合法结束。
+const BOUNDARY_DEATH_IDS = new Set(
+  STAT_KEYS.flatMap((key) => [`death-${key}-min`, `death-${key}-max`]),
+);
+const SPECIAL_DEATH_IDS: Set<string> = new Set(
+  DEATHS.filter((d) => !BOUNDARY_DEATH_IDS.has(d.id)).map((d) => d.id),
+);
 
 const SEED_COUNT = 200;
 
@@ -85,7 +94,7 @@ describe('runReign（端到端）', () => {
     for (let seed = 1; seed <= SEED_COUNT; seed += 1) {
       const result = runReign(seed, CARDS, DEATHS, alternate);
       const breached = findBreach(result.stats) !== null;
-      const special = result.death.id === 'death-exhausted-vow';
+      const special = SPECIAL_DEATH_IDS.has(result.death.id);
       expect(
         breached || special,
         `seed=${seed} 以 ${result.death.id} 结束但不满足任何结束条件`,
