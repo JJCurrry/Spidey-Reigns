@@ -192,6 +192,17 @@ body {
   color: var(--ink-soft);
 }
 
+.ending__art {
+  width: min(14rem, 60vw);
+  height: auto;
+  max-height: 32vh;
+  object-fit: contain;
+  border: 2px solid var(--ink);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: 3px 3px 0 var(--ink-soft);
+}
+
 .ending__title {
   margin: 0;
   font-size: 1.6rem;

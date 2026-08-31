@@ -35,7 +35,12 @@ export function StatBars({ stats }: StatBarsProps) {
               className="stat-bars__icon"
             />
             <span className="stat-bars__label">{STAT_LABELS[key]}</span>
-            <span className="stat-bars__track" role="meter" aria-valuenow={value} aria-label={STAT_LABELS[key]}>
+            <span
+              className="stat-bars__track"
+              role="meter"
+              aria-valuenow={value}
+              aria-label={STAT_LABELS[key]}
+            >
               <span className="stat-bars__fill" style={{ width: `${value}%` }} />
             </span>
           </li>

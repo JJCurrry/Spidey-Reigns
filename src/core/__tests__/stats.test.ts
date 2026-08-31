@@ -35,7 +35,10 @@ describe('指标结算（不变量 #3：四指标恒为 0–100 整数）', () =
 
   it('findBreach 在触及 0 或 100 时返回对应边界', () => {
     expect(findBreach({ ...INITIAL_STATS, life: 0 })).toEqual({ key: 'life', side: 'min' });
-    expect(findBreach({ ...INITIAL_STATS, villains: 100 })).toEqual({ key: 'villains', side: 'max' });
+    expect(findBreach({ ...INITIAL_STATS, villains: 100 })).toEqual({
+      key: 'villains',
+      side: 'max',
+    });
   });
 
   it('findBreach 在安全区间返回 null', () => {

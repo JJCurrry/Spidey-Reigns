@@ -46,8 +46,12 @@ export function migrateSave(raw: unknown): SaveData {
   return {
     version: SAVE_VERSION,
     seenDeaths: asStringArray(raw.seenDeaths),
-    reignsPlayed: typeof raw.reignsPlayed === 'number' && Number.isFinite(raw.reignsPlayed) ? raw.reignsPlayed : 0,
-    bestTurns: typeof raw.bestTurns === 'number' && Number.isFinite(raw.bestTurns) ? raw.bestTurns : 0,
+    reignsPlayed:
+      typeof raw.reignsPlayed === 'number' && Number.isFinite(raw.reignsPlayed)
+        ? raw.reignsPlayed
+        : 0,
+    bestTurns:
+      typeof raw.bestTurns === 'number' && Number.isFinite(raw.bestTurns) ? raw.bestTurns : 0,
   };
 }
 
