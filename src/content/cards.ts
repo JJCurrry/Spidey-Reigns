@@ -175,6 +175,40 @@ export const CARDS = [
       outcome: '你扯断了发射器。虚惊一场，但全市都替你捏了把汗。',
     },
   },
+  {
+    id: 'card-media-stardom',
+    speaker: '综艺制作人',
+    text: '你的故事收视爆了。我们想给你做一档专属真人秀，冠名费够买下半条街。',
+    weight: 3,
+    condition: { stats: { media: { min: 55 } } },
+    left: {
+      text: '顺水推舟',
+      effect: { media: 14, life: -4 },
+      outcome: '镜头追着你升空。你开始分不清哪句是台词，哪句是自己。',
+    },
+    right: {
+      text: '拒绝镜头',
+      effect: { media: 10, civilians: 4 },
+      outcome: '你挂了电话，可热搜已经替你写好了下一季剧本。',
+    },
+  },
+  {
+    id: 'card-media-silence',
+    speaker: '收件箱',
+    text: '你的名字从热搜跌到了第十页。连詹姆森都改写星座专栏了。',
+    weight: 3,
+    condition: { stats: { media: { max: 45 } } },
+    left: {
+      text: '彻底隐身',
+      effect: { media: -14 },
+      outcome: '你删掉了所有账号。从此城市讲你的故事时，主角换成别人。',
+    },
+    right: {
+      text: '强行刷存在',
+      effect: { media: -10, life: 4 },
+      outcome: '你对着镜头比了个Pose。镜子里的自己，有点像商品。',
+    },
+  },
 
   // ---------------- 反派线 ----------------
   {
@@ -288,6 +322,39 @@ export const CARDS = [
       text: '只保人，不抓人',
       effect: { civilians: 10, villains: 4, life: 4 },
       outcome: '伤员都送走了。地盘照旧分，只是今晚没人死。',
+    },
+  },
+  {
+    id: 'card-villain-overlord',
+    speaker: '街头传闻',
+    text: '地盘重新分完了，每一块都插着别人的旗。没人再记得这座城有过蒙面人。',
+    weight: 3,
+    condition: { stats: { villains: { min: 55 } } },
+    left: {
+      text: '赶尽杀绝',
+      effect: { villains: 14, civilians: -8 },
+      outcome: '你把最后的据点端了。可新冒头的，比旧的对你更陌生。',
+    },
+    right: {
+      text: '收编为己用',
+      effect: { villains: 10, life: 6 },
+      outcome: '你收纳了散兵。城市在你脚下，第一次有了明确的归属。',
+    },
+  },
+  {
+    id: 'card-villain-vacuum',
+    text: '监狱空了，通缉令换成了你的证件照。连小偷都开始绕着你走。',
+    weight: 3,
+    condition: { stats: { villains: { max: 45 } } },
+    left: {
+      text: '放任不管',
+      effect: { villains: -14 },
+      outcome: '你去了别的城市。这里的头条，换成了别人的热闹。',
+    },
+    right: {
+      text: '主动清剿',
+      effect: { villains: -10, life: 6 },
+      outcome: '你蹲守了三晚。抓到的第一个，竟是个模仿你的少年。',
     },
   },
 
@@ -500,7 +567,7 @@ export const CARDS = [
   {
     id: 'card-civilians-worship',
     text: '街角立起了你的等身雕像，底座刻着「我们的王」。有人开始朝它下跪。',
-    condition: { stats: { civilians: { min: 85 } } },
+    condition: { stats: { civilians: { min: 60 } } },
     left: {
       text: '推倒雕像',
       effect: { civilians: -16, media: 6 },
@@ -508,8 +575,25 @@ export const CARDS = [
     },
     right: {
       text: '留着',
-      effect: { civilians: 6, media: 8 },
+      effect: { civilians: 2, media: 8 },
       outcome: '你没动。第二天，雕像戴上了真的战衣。',
+    },
+  },
+  {
+    id: 'card-civilians-exodus',
+    speaker: '广场',
+    text: '雕像被推倒了，底座还在，上面有人用喷漆写「下一个是谁」。人群散得比来时快。',
+    weight: 4,
+    condition: { stats: { civilians: { max: 48 } } },
+    left: {
+      text: '抽身离去',
+      effect: { civilians: -14 },
+      outcome: '你荡出城界。橱窗里你的战衣，被当作万圣节存货打折。',
+    },
+    right: {
+      text: '挽回人心',
+      effect: { civilians: -10, life: 6 },
+      outcome: '你挨家挨户解释了三晚。有人信了，也有人只是礼貌地点头。',
     },
   },
   {

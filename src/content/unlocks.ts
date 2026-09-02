@@ -71,6 +71,11 @@ export const UNLOCK_TIERS = [
       'card-mj-rooftop',
       'card-traded-hero',
       'card-last-swing',
+      'card-media-stardom',
+      'card-media-silence',
+      'card-villain-overlord',
+      'card-villain-vacuum',
+      'card-civilians-exodus',
     ],
   },
   {
