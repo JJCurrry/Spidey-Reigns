@@ -25,6 +25,9 @@ npm-debug.log*
 # relocated git 数据：真正的 git 仓库已移出工作树根（见 scripts/ 与 .husky/post-commit）
 .workbuddy/git-data/
 
+# post-commit 生成离线 bundle 时的中转文件（见 .husky/post-commit）
+_git_backup_tmp.bundle
+
 # 美术资源原始文件（AI 生成的中间产物、PSD 等，不入库）
 # 注意：最终用于游戏的资源放 public/assets/，是需要入库的
 assets/_raw/
