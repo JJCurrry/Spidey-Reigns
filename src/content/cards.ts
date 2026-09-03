@@ -907,4 +907,292 @@ export const CARDS = [
       outcome: '你退到安全处。孩子被后来的人救起——你告诉自己这就够了。',
     },
   },
+
+  // ---------------- M4-A 内容扩充：号角日报线（媒体主题） ----------------
+  {
+    id: 'card-bugle-smear',
+    speaker: 'J·乔纳·詹姆森',
+    text: '号角日报头版换成了通栏：「蒙面者制造恐慌的十大证据」。詹姆森说这是「为市民负责」。',
+    left: {
+      text: '公开反击',
+      effect: { media: 8, civilians: -6 },
+      outcome: '你逐条举证。第二天他们把标题改成了「蒙面者狡辩」。',
+    },
+    right: {
+      text: '不理会',
+      effect: { media: -10, life: 4 },
+      outcome: '你继续巡逻。专题的下一期，换成了星座运势。',
+    },
+  },
+  {
+    id: 'card-bugle-interview',
+    speaker: '号角日报主持人',
+    text: '「给你十五分钟黄金档，说清楚你到底站哪边。全城都在等。」',
+    condition: { stats: { media: { min: 55 } } },
+    left: {
+      text: '上节目',
+      effect: { media: 8, life: -6 },
+      outcome: '你说了很多。收视破纪录，可没人记得你说了什么。',
+    },
+    right: {
+      text: '拒绝曝光',
+      effect: { media: -8, civilians: -6 },
+      outcome: '你挂了电话。街区的人反而更信你——因为他们见过你救人。',
+    },
+  },
+  {
+    id: 'card-bugle-leak',
+    speaker: '匿名爆料邮件',
+    text: '有人把你的行踪卖给号角日报，配文「义警的巢穴找到了」。地图画得八九不离十。',
+    left: {
+      text: '否认并护人',
+      effect: { media: 6, civilians: -8 },
+      outcome: '你发声明那是假的。可那栋楼当晚还是被围观的人堵了。',
+    },
+    right: {
+      text: '将计就计钓鱼',
+      effect: { media: -6, villains: 8 },
+      outcome: '你布了空窝。来蹲点的，全是想借你名头作案的人。',
+    },
+  },
+  {
+    id: 'card-bugle-podcast',
+    speaker: '你的收件箱',
+    text: '你试着开了档播客自证清白。第一期播放量两位数，詹姆森转发说「看他还能撑几期」。',
+    left: {
+      text: '认真做下去',
+      effect: { media: 8, life: -4 },
+      outcome: '第三期有人听哭了。你说不清是因为内容，还是因为孤独。',
+    },
+    right: {
+      text: '敷衍了事',
+      effect: { media: -6, life: 6 },
+      outcome: '你停更了。播客的简介还停在「敬请期待」。',
+    },
+  },
+  {
+    id: 'card-bugle-truth',
+    speaker: '年轻记者',
+    text: '「我想写篇真实的你。不煽情，就写你救过的人。可以配合我吗？」',
+    left: {
+      text: '配合采访',
+      effect: { media: 6, civilians: -4 },
+      outcome: '稿子发了。标题很朴素，却比任何头条都让人记得你。',
+    },
+    right: {
+      text: '婉拒',
+      effect: { media: -8, life: 6 },
+      outcome: '你谢了她。她把笔记本收起来，没再多问。',
+    },
+  },
+  {
+    id: 'card-bugle-crusade',
+    speaker: 'J·乔纳·詹姆森',
+    text: '号角日报开了一个月的专题「通缉蒙面者」。你再去救人，镜头只追你救人的代价。',
+    once: true,
+    condition: { stats: { media: { min: 50 } } },
+    left: {
+      text: '起诉詹姆森',
+      effect: { media: -10, civilians: 8 },
+      outcome: '法庭判他赔礼。可专题的回放，比判决传播得远。',
+    },
+    right: {
+      text: '沉默，任其发酵',
+      effect: { media: -6 },
+      death: 'death-bugle-canceled',
+    },
+  },
+
+  // ---------------- M4-A 内容扩充：章鱼博士线（反派主题，扩容） ----------------
+  {
+    id: 'card-doc-ock-tentacle',
+    speaker: '章鱼博士',
+    text: '他用一条机械臂卷走婴儿车，另三条对准你：「先看你救不救得过来。」',
+    left: {
+      text: '正面拦截',
+      effect: { civilians: -4, villains: 6, life: -8 },
+      outcome: '你接住了车。他的臂膀在你肩上留下四道印，像在量你的尺寸。',
+    },
+    right: {
+      text: '先护住人群',
+      effect: { civilians: 10, villains: -10, life: -4 },
+      outcome: '没人受伤。章鱼博士退进巷子，像在记你的反应。',
+    },
+  },
+  {
+    id: 'card-doc-ock-offer',
+    speaker: '章鱼博士',
+    text: '「跟我合作，这城市就再没有第二个反派。你只管救人，脏活我来。」',
+    once: true,
+    left: {
+      text: '拒绝',
+      effect: { villains: 6, civilians: -6, media: 4 },
+      outcome: '你打飞了他的提案。第二天头条写「义警与博士决裂」。',
+    },
+    right: {
+      text: '假意答应',
+      effect: { villains: -10, life: 6 },
+      flag: 'flag-ock-truce',
+      outcome: '你点了头。他笑着把一条闲置的臂，搭在了你肩上。',
+    },
+  },
+  {
+    id: 'card-doc-ock-research',
+    speaker: '实验室监控',
+    text: '你潜进他的实验室，发现反应堆核心连着一整套神经接口——他在试把自己的意识塞进别人身体。',
+    left: {
+      text: '摧毁实验室',
+      effect: { villains: -10, life: -6 },
+      outcome: '火光里你抢出核心。他会在别处重来，但你争取了一晚。',
+    },
+    right: {
+      text: '窃取技术',
+      effect: { villains: 6, media: 6 },
+      outcome: '你拿走了图纸。可有些想法，一旦看过就删不掉。',
+    },
+  },
+  {
+    id: 'card-doc-ock-lab-accident',
+    speaker: '急诊广播',
+    text: '他的实验失控，半个街区的居民出现了神经灼烧。医院挤满了人。',
+    left: {
+      text: '冲进去救人',
+      effect: { civilians: -4, life: -8 },
+      outcome: '你背出最后一名老人。防护服下的皮肤，也开始发烫。',
+    },
+    right: {
+      text: '上报等消防',
+      effect: { civilians: -6, life: 6, media: 4 },
+      outcome: '你退到警戒线外。救人的，是穿制服的人。',
+    },
+  },
+  {
+    id: 'card-doc-ock-redemption',
+    speaker: '章鱼博士',
+    text: '机械臂暂时断电，奥托清醒了一瞬：「帮我……把它们摘掉。我不想再当 four arms。」',
+    condition: { flags: ['flag-ock-truce'] },
+    left: {
+      text: '帮他取下机械臂',
+      effect: { civilians: -4, life: -6 },
+      outcome: '你切断了接口。他瘫在地上，第一次像个人。',
+    },
+    right: {
+      text: '趁机关押',
+      effect: { villains: 8, media: -4 },
+      outcome: '你把他送进监狱。可那句「four arms」，你一直没听懂。',
+    },
+  },
+  {
+    id: 'card-doc-ock-finale',
+    speaker: '章鱼博士',
+    text: '最后的机械臂刺向你脊椎：「你的身体比我的好用。我们共用，城市就太平了。」',
+    once: true,
+    condition: { stats: { villains: { min: 50 } } },
+    left: {
+      text: '抢下主控',
+      effect: { civilians: -4, villains: 6, life: -10 },
+      outcome: '你砸碎了主控。机械臂松开时，奥托已经不在了。',
+    },
+    right: {
+      text: '力竭，被吞没',
+      effect: { villains: 4 },
+      death: 'death-ock-assimilated',
+    },
+  },
+
+  // ---------------- M4-A 内容扩充：猎人克莱文线（反派主题，新建） ----------------
+  {
+    id: 'card-kraven-arrival',
+    speaker: '号角日报头版',
+    text: '猎人克莱文登报：「我来到这座城市，只为猎杀最大的猎物——那个穿红蓝的。」',
+    left: {
+      text: '公开应战',
+      effect: { villains: 6, media: -6 },
+      outcome: '你留了张字条在报社：「来天台。」全城都在等这场戏。',
+    },
+    right: {
+      text: '低调回避',
+      effect: { villains: -10, life: 8 },
+      outcome: '你熄了灯。克莱文在空楼顶等了一夜，只等来风。',
+    },
+  },
+  {
+    id: 'card-kraven-game',
+    speaker: '克莱文的广播',
+    text: '他把一整栋楼的人困进猎场，计时器已经开始：「进来救他们，证明你是猎物还是英雄。」',
+    left: {
+      text: '闯入猎场',
+      effect: { villains: 6, life: -8 },
+      outcome: '你破了三道陷阱才到核心。人质都在，你的肩在渗血。',
+    },
+    right: {
+      text: '在外设反陷阱',
+      effect: { villains: -10, civilians: -4 },
+      outcome: '你断了他的退路。克莱文撤离时，第一次回头看了你一眼。',
+    },
+  },
+  {
+    id: 'card-kraven-trap',
+    speaker: '克莱文',
+    text: '你踩中了他铺的网——蛛丝被一种更韧的纤维缠住，越挣越紧。',
+    left: {
+      text: '硬挣脱',
+      effect: { villains: 6, life: -8 },
+      outcome: '你扯断网冲出去。手臂上留了一道和他勋章同款的痕。',
+    },
+    right: {
+      text: '周旋等破绽',
+      effect: { villains: -6, media: 6 },
+      outcome: '你陪他聊到天亮。等他松懈，你才看清网的接口。',
+    },
+  },
+  {
+    id: 'card-kraven-respect',
+    speaker: '克莱文',
+    text: '「你是难得的对手。我敬你——这把猎刀，留作纪念，也留作下一次的约。」',
+    once: true,
+    left: {
+      text: '接受挑衅',
+      effect: { villains: 6, life: -6 },
+      outcome: '你接了刀。下一次相遇时，你们都更想赢。',
+    },
+    right: {
+      text: '拒绝并劝退',
+      effect: { life: 10, civilians: -4 },
+      outcome: '你把刀插回他脚边：「我不是你的猎物。」他竟真走了。',
+    },
+  },
+  {
+    id: 'card-kraven-jungle',
+    speaker: '镜中的你',
+    text: '你梦回草原，杀戮的本能顺着克莱文的猎香往上涌。你分不清是他在你里，还是你在他里。',
+    condition: { stats: { life: { max: 40 } } },
+    left: {
+      text: '提醒自己为何而战',
+      effect: { life: 10, civilians: -6 },
+      outcome: '你摸了摸钱包里本叔叔的照片。草原退了，纽约回来了。',
+    },
+    right: {
+      text: '放任狩猎快感',
+      effect: { villains: 6, life: -6 },
+      outcome: '你荡出去时，比平时狠。第二天，街角的混混少了三个。',
+    },
+  },
+  {
+    id: 'card-kraven-finale',
+    speaker: '克莱文',
+    text: '「最后一猎。我赢了你，就把你制成最骄傲的战利品——纽约会记住，谁才是顶级猎手。」',
+    once: true,
+    condition: { stats: { villains: { min: 50 } } },
+    left: {
+      text: '反杀，护住全城',
+      effect: { civilians: -4, villains: 6, life: -10 },
+      outcome: '你把他按进泥里。他笑着说「好猎物」，然后不动了。',
+    },
+    right: {
+      text: '被猎杀',
+      effect: { villains: 4 },
+      death: 'death-kraven-hunt',
+    },
+  },
 ] as const satisfies readonly Card[];
