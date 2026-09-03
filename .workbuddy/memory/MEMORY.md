@@ -82,3 +82,10 @@ random 中位 17 回合（比 T-006 的 19 略短，内容更戏剧化的可接�
 - **`npx <cmd>` 在沙箱解析极慢**（`npx prettier` 90s 被 SIGTERM 杀掉，看起来像挂死）。
   直接调入口文件：`node node_modules/prettier/bin/prettier.cjs`、`node node_modules/vite-node/vite-node.mjs`。
   判定「命令挂死」前先换掉 npx。
+- **UI 表现层改动会动现有测试（M4-B 踩坑，可复用）**：
+  - 给 `SwipeArea` 之类「手势/循环抉择」组件加 `key={card.id}` 会令其每次重挂载、DOM 节点被替换，
+    破坏「`const area = getByLabelText(...)` 后循环 `fireEvent.keyDown(area)`」类测试（事件打到脱离文档的旧节点）。
+    改法：把 `key` 移到内层包裹层（如 `.card-enter`），外层手势节点保持稳定。
+  - `React.lazy` + `Suspense` 后，懒加载组件异步出现，测试须用 `await screen.findByRole(...)` 等异步查询，
+    原 `getByRole` 同步断言会因 Suspense fallback 还在而失败。
+  - 音效一律走 **Web Audio 运行时合成**（`src/ui/audio.ts`），不新增音频素材文件（规避漫威素材红线、零加载成本）。
