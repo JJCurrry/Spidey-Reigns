@@ -24,12 +24,13 @@ describe('TitleScreen', () => {
     expect(onStart).toHaveBeenCalledTimes(1);
   });
 
-  it('点击「图鉴」打开结局/成就图鉴覆盖层', () => {
+  it('点击「图鉴」打开结局/成就图鉴覆盖层', async () => {
     render(<TitleScreen save={freshSave()} onStart={() => {}} />);
     // 未打开时图鉴对话框不存在。
     expect(screen.queryByRole('dialog', { name: '图鉴' })).not.toBeInTheDocument();
     // 标题屏的图鉴按钮 aria-label 为「打开图鉴」。
     fireEvent.click(screen.getByRole('button', { name: '打开图鉴' }));
-    expect(screen.getByRole('dialog', { name: '图鉴' })).toBeInTheDocument();
+    // 图鉴为懒加载（Suspense），对话框异步出现，需等待。
+    expect(await screen.findByRole('dialog', { name: '图鉴' })).toBeInTheDocument();
   });
 });

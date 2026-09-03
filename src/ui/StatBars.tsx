@@ -3,10 +3,12 @@
  * 越靠边界颜色越「危险」。指标键顺序 = STAT_KEYS，永远与 UI 同步。
  */
 
+import { useEffect, useRef } from 'react';
 import { STAT_LABELS } from '../content/constants';
 import { STAT_KEYS } from '../core/types';
 import { STAT_MAX, STAT_MIN } from '../core/stats';
 import { AssetFrame } from './AssetFrame';
+import { playDanger } from './audio';
 import type { Stats } from '../core/types';
 
 export interface StatBarsProps {
@@ -20,7 +22,21 @@ function edgeClass(value: number): 'is-low' | 'is-high' | '' {
   return '';
 }
 
+/** 是否进入临界区（≤10 或 ≥90）：触发一次轻提示音。 */
+function isDanger(value: number): boolean {
+  return value <= 10 || value >= STAT_MAX - 10;
+}
+
 export function StatBars({ stats }: StatBarsProps) {
+  // 仅当某指标「从安全区进入临界区」时提示一次（避免每回合重复响）。
+  const prev = useRef(stats);
+  useEffect(() => {
+    const before = prev.current;
+    const entered = STAT_KEYS.some((key) => !isDanger(before[key]) && isDanger(stats[key]));
+    prev.current = stats;
+    if (entered) playDanger();
+  }, [stats]);
+
   return (
     <ul className="stat-bars" aria-label="四指标状态">
       {STAT_KEYS.map((key) => {

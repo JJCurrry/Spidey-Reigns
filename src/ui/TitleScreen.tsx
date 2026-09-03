@@ -5,11 +5,14 @@
  * 图鉴覆盖层自管理（与 ReignGame 内的图鉴互不干扰，都是纯组件）。
  */
 
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { AssetFrame } from './AssetFrame';
-import { CodexScreen } from './CodexScreen';
 import { freshSave, type SaveData } from '../save/migrate';
+import { useMuted } from './audio';
 import './title.css';
+
+// 图鉴仅在点开时拉取：从首屏 bundle 拆出独立 chunk（M4-B 首屏优化）。
+const CodexScreen = lazy(() => import('./CodexScreen').then((m) => ({ default: m.CodexScreen })));
 
 export interface TitleScreenProps {
   /** 跨会话存档（用于图鉴展示已发现内容）；缺省用空档。 */
@@ -20,9 +23,22 @@ export interface TitleScreenProps {
 
 export function TitleScreen({ save = freshSave(), onStart }: TitleScreenProps) {
   const [showCodex, setShowCodex] = useState(false);
+  const [muted, toggleMuted] = useMuted();
 
   return (
     <main className="title" role="dialog" aria-label="标题屏">
+      <div className="title__topbar">
+        <button
+          type="button"
+          className="title__mute-btn"
+          onClick={toggleMuted}
+          aria-label={muted ? '开启音效与震动' : '关闭音效与震动'}
+          aria-pressed={muted}
+        >
+          {muted ? '🔇' : '🔊'}
+        </button>
+      </div>
+
       <div className="title__portrait">
         <AssetFrame
           assetId="char-spider-man"
@@ -49,7 +65,11 @@ export function TitleScreen({ save = freshSave(), onStart }: TitleScreenProps) {
         </button>
       </div>
 
-      {showCodex && <CodexScreen save={save} onClose={() => setShowCodex(false)} />}
+      {showCodex && (
+        <Suspense fallback={<div className="overlay-loading">加载中…</div>}>
+          <CodexScreen save={save} onClose={() => setShowCodex(false)} />
+        </Suspense>
+      )}
     </main>
   );
 }
