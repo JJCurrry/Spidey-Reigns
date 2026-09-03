@@ -61,6 +61,17 @@ random 中位 17 回合（比 T-006 的 19 略短，内容更戏剧化的可接�
 放进仓库或构建产物；AI 生成 / 自绘的原创演绎与文字层面的角色名允许。
 **后续会话不必再劝阻。** 若日后要上架或商业化，回归路径是 ADR-0006 描述的原创化方案。
 
+## 部署（M4-C，GitHub Pages）
+
+- 一键发布：`push main` 触发 `.github/workflows/deploy.yml`（GitHub Actions 原生 Pages：
+  `configure-pages`→`upload-pages-artifact(dist)`→`deploy-pages`），部署前跑 typecheck+lint+test+build 门禁。
+- 资源 URL 必须感知 base：`src/content/assets.ts` 的 `assetUrl()` 拼 `import.meta.env.BASE_URL`；
+  `vite.config.ts` 的 `base` 仅在 `mode==='production'`（`vite build`）挂 `/Spidey-Reigns/`，`npm run dev` 仍根路径。
+- **vite 配置坑（可复用）**：配置里别用 `import.meta.env.PROD`——vitest 加载配置时 `import.meta.env` 尚未注入，会报
+  `TypeError: Cannot read properties of undefined (reading 'PROD')`。判断生产用 `defineConfig(({ mode }) => ...)` 的 `mode` 参数（零 `import.meta.env`、零 `process`）。
+- 人工步骤（L3，非 AI 代做）：push 后仓库 **Settings → Pages → Source 选「GitHub Actions」** 首次开启；
+  验 `https://jjcurrry.github.io/Spidey-Reigns/`。
+
 ## 环境坑（Windows + Git Bash）
 
 - **Git 钩子不继承交互式 shell 的 PATH**，`npx` 在钩子里会 command not found。
