@@ -344,7 +344,7 @@ export const CARDS = [
   {
     id: 'card-villain-vacuum',
     text: '监狱空了，通缉令换成了你的证件照。连小偷都开始绕着你走。',
-    weight: 3,
+    weight: 4,
     condition: { stats: { villains: { max: 45 } } },
     left: {
       text: '放任不管',
@@ -480,6 +480,40 @@ export const CARDS = [
       outcome: '你翻出窗外。生日愿望，是希望明天不用再过生日。',
     },
   },
+  {
+    id: 'card-life-domestic',
+    speaker: '梅姨',
+    text: '「你今晚哪儿也别去。饭在锅里，我在客厅。你最近瘦得我看着害怕。」',
+    weight: 2,
+    condition: { stats: { life: { min: 55 } } },
+    left: {
+      text: '坐下吃饭',
+      effect: { life: 10, villains: 3 },
+      outcome: '你吃完了整碗饭。窗外有警报，你听见了，然后低头添了第二碗。',
+    },
+    right: {
+      text: '答应她只待一会儿',
+      effect: { life: 7, media: -3 },
+      outcome: '你坐了十分钟就起身。她说「够久了」，语气像在说服自己。',
+    },
+  },
+  {
+    id: 'card-life-burnout',
+    speaker: '镜子里的人',
+    text: '你已经三周没睡够四小时。咖啡凉了，手套里的那只手在抖。',
+    weight: 2,
+    condition: { stats: { life: { max: 45 } } },
+    left: {
+      text: '再撑一夜',
+      effect: { life: -10, media: 3 },
+      outcome: '你把面罩拉上去遮住黑眼圈。镜头拍到的，只有你荡出去的那一秒。',
+    },
+    right: {
+      text: '把闹钟关掉',
+      effect: { life: -7, villains: 4 },
+      outcome: '你睡了十九个小时。醒来时，城里多了三块没人认领的地盘。',
+    },
+  },
 
   // ---------------- 城市大事件（条件触发） ----------------
   {
@@ -575,7 +609,7 @@ export const CARDS = [
     },
     right: {
       text: '留着',
-      effect: { civilians: 2, media: 8 },
+      effect: { media: 8 },
       outcome: '你没动。第二天，雕像戴上了真的战衣。',
     },
   },
@@ -583,7 +617,7 @@ export const CARDS = [
     id: 'card-civilians-exodus',
     speaker: '广场',
     text: '雕像被推倒了，底座还在，上面有人用喷漆写「下一个是谁」。人群散得比来时快。',
-    weight: 4,
+    weight: 5,
     condition: { stats: { civilians: { max: 48 } } },
     left: {
       text: '抽身离去',

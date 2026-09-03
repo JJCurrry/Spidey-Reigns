@@ -76,6 +76,8 @@ export const UNLOCK_TIERS = [
       'card-villain-overlord',
       'card-villain-vacuum',
       'card-civilians-exodus',
+      'card-life-domestic',
+      'card-life-burnout',
     ],
   },
   {

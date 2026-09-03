@@ -279,7 +279,56 @@ function summarize(res: SimResult) {
 function main() {
   const N_RANDOM = 4000;
   const N_HUNTER = 2500;
-  const randomSeeds = Array.from({ length: N_RANDOM }, (_, i) => i * 2654435761 + 12345);
+  // 调参是在固定种子集上反复迭代的，存在「对这组种子过拟合」的风险。
+  // 用 SEED_OFFSET 换一组平行样本做交叉验证：占比若明显漂移，说明参数是过拟合而非真实分布。
+  const SEED_OFFSET = Number(process.env.SEED_OFFSET ?? 0);
+  const randomSeeds = Array.from(
+    { length: N_RANDOM },
+    (_, i) => i * 2654435761 + 12345 + SEED_OFFSET,
+  );
+
+  // ── 快速迭代模式 ──
+  // 调参时需要在「改一组数值 → 看四分支占比」之间快速往返，跑完整报告（含猎人 + 五策略）
+  // 太慢。加 `--quick`：只跑 random 4000 局，打印四分支占比与八边界占比，不写报告文件。
+  if (process.argv.includes('--quick')) {
+    const sim = simulate(randomChoose, randomSeeds);
+    const sum = summarize(sim);
+    const perBoundary = BOUNDARY_DEATH_IDS.map((id) => ({
+      id,
+      n: sim.deathCounts[id] ?? 0,
+    }));
+    const boundaryTotal = perBoundary.reduce((a, b) => a + b.n, 0);
+    const branch: Record<string, number> = {};
+    for (const k of STAT_KEYS) branch[k] = 0;
+    for (const b of perBoundary) {
+      const key = b.id.replace(/^death-/, '').replace(/-(min|max)$/, '');
+      if (branch[key] !== undefined) branch[key] += b.n;
+    }
+    const label: Record<string, string> = {
+      civilians: '市民',
+      media: '媒体',
+      villains: '反派',
+      life: '私人生活',
+    };
+    console.log(
+      `卡牌 ${CARDS.length} ｜ random ${N_RANDOM} 局 ｜ 中位 ${sum.median} 回合 ｜ 濒卡死 ${sum.nearStuck}`,
+    );
+    console.log('四分支（占 8 边界结局合计）：');
+    for (const k of STAT_KEYS) {
+      console.log(
+        `  ${label[k].padEnd(5)} ${(((branch[k] ?? 0) / (boundaryTotal || 1)) * 100).toFixed(1)}%`,
+      );
+    }
+    console.log('八边界结局（占全部 4000 局）：');
+    for (const b of perBoundary) {
+      console.log(`  ${b.id.padEnd(22)} ${((b.n / N_RANDOM) * 100).toFixed(1)}%  (${b.n})`);
+    }
+    const specialZero = SPECIAL_DEATH_IDS.filter((id) => (sim.specialHits[id] ?? 0) === 0);
+    console.log(
+      `特殊死法 random 不可见：${specialZero.length ? specialZero.join('、') : '无（全部可见）'}`,
+    );
+    return;
+  }
 
   // 1) 指标点击频率
   const click = statClickFrequency();
@@ -341,7 +390,7 @@ function main() {
   L('# 蛛丝王权 · 平衡体检报告');
   L();
   L(
-    `生成时间：2026-09-02 ｜ 卡牌总数：${CARDS.length} ｜ 结局总数：${DEATHS.length}（边界 8 + 特殊 ${SPECIAL_DEATH_IDS.length}）`,
+    `生成时间：${new Date().toISOString().slice(0, 10)} ｜ 卡牌总数：${CARDS.length} ｜ 结局总数：${DEATHS.length}（边界 ${BOUNDARY_DEATH_IDS.length} + 特殊 ${SPECIAL_DEATH_IDS.length}）`,
   );
   L(
     `模拟口径：使用**全解锁卡池（全部卡牌）**代表长期玩家终态；random 策略 4000 局，策略对比 1500 局/策略，猎人定向 2500 局/死法。`,
@@ -350,6 +399,12 @@ function main() {
   L(
     '> 本报告只做体检、不改数值。任何调参需由你给定规格后新开 T-006 工单（原则 3：手感属人的品味判断）。',
   );
+  // AUDIT_NOTE：把「这一轮调了什么」写进报告头部，避免报告与调参历史脱节。
+  // 用法：AUDIT_NOTE="第二轮：新增 2 张生活放大器..." vite-node scripts/balance-audit.ts
+  const auditNote = process.env.AUDIT_NOTE;
+  if (auditNote) {
+    L(`> 本轮调参：` + auditNote);
+  }
   L();
 
   // ── 一、指标被点击频率 ──
@@ -520,7 +575,7 @@ function main() {
   );
   const domStat = STAT_KEYS.reduce((a, b) => ((dynDeath[b] ?? 0) > (dynDeath[a] ?? 0) ? b : a));
   L(
-    `2. **最常致死指标**：${statLabels[domStat]}（${dynDeath[domStat] ?? 0} 局，${((dynDeath[domStat] ?? 0) / (dynTotal || 1)) * 100}%），偏脆断点大概率在这条线上。`,
+    `2. **最常致死指标**：${statLabels[domStat]}（${dynDeath[domStat] ?? 0} 局，${(((dynDeath[domStat] ?? 0) / (dynTotal || 1)) * 100).toFixed(1)}%），偏脆断点大概率在这条线上。`,
   );
   const unreachable = gating.filter((g) => {
     const randHit = randomSim.specialHits[g.id] ?? 0;
@@ -531,7 +586,7 @@ function main() {
     return randHit === 0 && hunterResults[g.id].hits > 0;
   });
   L(
-    `3. **特殊死法可达性**：6 个特殊死法中，random 全可见的有 ${6 - unreachable.length - rareHunter.length} 个；仅定向猎人可见（极稀有）${rareHunter.length} 个；模拟不可达 ${unreachable.length} 个${unreachable.length ? '（' + unreachable.map((u) => u.id).join('、') + '）' : ''}。`,
+    `3. **特殊死法可达性**：${SPECIAL_DEATH_IDS.length} 个特殊死法中，random 全可见的有 ${SPECIAL_DEATH_IDS.length - unreachable.length - rareHunter.length} 个；仅定向猎人可见（极稀有）${rareHunter.length} 个；模拟不可达 ${unreachable.length} 个${unreachable.length ? '（' + unreachable.map((u) => u.id).join('、') + '）' : ''}。`,
   );
   const surv = stratSummary.survive;
   const al = stratSummary['always-left'];
@@ -542,7 +597,10 @@ function main() {
   L();
 
   const md = lines.join('\n');
-  const outPath = resolve(process.cwd(), '平衡体检报告-2026-09-02.md');
+  const outPath = resolve(
+    process.cwd(),
+    `平衡体检报告-${new Date().toISOString().slice(0, 10)}.md`,
+  );
   writeFileSync(outPath, md, 'utf8');
 
   // 控制台精简版
@@ -552,7 +610,7 @@ function main() {
     `平均回合 ${randomSummary.mean}（中位 ${randomSummary.median}，最短 ${shortest.turns}/seed ${shortest.s}，最长 ${longest.turns}/seed ${longest.s}）`,
   );
   console.log(
-    `最常致死指标：${statLabels[domStat]}（${((dynDeath[domStat] ?? 0) / (dynTotal || 1)) * 100}%）`,
+    `最常致死指标：${statLabels[domStat]}（${(((dynDeath[domStat] ?? 0) / (dynTotal || 1)) * 100).toFixed(1)}%）`,
   );
   console.log('特殊死法命中：');
   for (const g of gating) {
