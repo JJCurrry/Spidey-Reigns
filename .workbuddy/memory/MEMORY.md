@@ -14,11 +14,23 @@
 铁律：验收先行、小步提交（diff ≤400 行）、接力有棒、修复有规、熔断有线、变更落单。
 一句话总结：**能写成检查的规则绝不写成文字**（红线走不变量，规范走 lint）。
 
-## 玩法设定（待用户最终确认）
+## 玩法设定（已裁决，见 ADR-0008）
 
-- 四指标 = 市民 / 声誉 / 秩序 / 生活，初始均 50，双向致死（0 和 100 都结束一局）
+- 四指标 = **市民 / 媒体 / 反派 / 私人生活**，初始均 50，双向致死（0 和 100 都结束一局）
+  （M0 的「声誉/秩序」已被 ADR-0008 取代，不要再沿用旧名）
 - 一局只因死亡结束，无回合上限；`runReign` 有 MAX_TURNS=500 保险丝，命中即抛错（判为卡死缺陷）
 - 死亡是设计内容，不是失败惩罚——不得为了让玩家活久而削弱死亡判定
+
+## 平衡基线（T-006 两轮调参后，57 张卡）
+
+四分支边界致死占比（占 8 个边界结局合计）：**市民 29.4% / 媒体 22.4% / 反派 25.0% / 私人生活 23.3%**；
+八条边界结局全部 ≥4.5%；random 中位 19 回合；survive 偏置中位 53（技巧天花板）；特殊死法 6 个 random 全可见。
+
+调参工具：`scripts/balance-audit.ts`（`--quick` 40s 快速往返 / `SEED_OFFSET` 抗过拟合验证 / `AUDIT_NOTE` 记录本轮改动）。
+
+**调参铁律**：临界放大器（cornered 卡，进入危险区后左右同向推）的力度，必须按该指标的
+**静态触碰频率反比缩放**——生活被 76% 的选项推动，照抄媒体/反派的「权重 3 / 力度 14·10」会把它从 16%
+直接冲到 36%；减半成「权重 2 / 力度 10·7」才对。改完必须复跑，不拍脑袋。
 
 ## 已下沉为可执行检查的红线
 
@@ -59,4 +71,9 @@
   恢复：`npm run git:restore`；每次提交后 `.husky/post-commit` 自动刷新桌面 `Spidey-Reigns-gitbackup.bundle`。
   钩子 `prepare` 已改为 `husky && node scripts/husky-prepare.mjs`，强制绝对 `core.hooksPath`（否则外置 gitdir 下相对路径失效）。详情见各日期日志与 `scripts/`。
 - **`npm run build`/`coverage` 在沙箱空 dist 时挂死（ETIMEDOUT）**：CodeBuddy `node-safe-delete-shim.cjs` 把 `fs.rmSync` 改走 `genie-trash`（`GENIE_TRASH_DIR` 指向的 `win32-x64.exe`）。修法：命令前缀 `CODEBUDDY_SAFE_DELETE_ENABLED=0`（shim 在 env='0' 时早返回，rm 走原生删除）；真实机器无 shim 时为 no-op。未固化进 package.json（避免 IDE 特定 hack）。
-- **git 写入全局挂死（偶发，2026-08-31）**：`git commit`/`git bundle create` 即使 `--allow-empty --no-verify`、换真实 git.exe、新仓库也挂死（SIGTERM）；读操作正常。疑似沙箱拦截 git 写。恢复：在干净环境补提交；提交前先 `git bundle create` 离线备份。代码改动落盘 + 校验全绿 ≠ 已提交。
+- ~~**git 写入全局挂死（2026-08-31 记）**~~ **已证伪，勿再采信**（2026-09-03）：`git commit` 其实能成功。
+  真因是 pre-commit 的 **lint-staged 单次耗时 2 分 14 秒**（`git stash` 备份+恢复，relocated gitdir + 64MB 仓库），
+  一笔 commit 实测 3–7 分钟，超过常用超时才被误判为挂死。**修法：提交放进后台任务、超时给 ≥500s，别用 `--no-verify` 绕。**
+- **`npx <cmd>` 在沙箱解析极慢**（`npx prettier` 90s 被 SIGTERM 杀掉，看起来像挂死）。
+  直接调入口文件：`node node_modules/prettier/bin/prettier.cjs`、`node node_modules/vite-node/vite-node.mjs`。
+  判定「命令挂死」前先换掉 npx。
