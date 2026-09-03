@@ -26,7 +26,9 @@ npm-debug.log*
 .workbuddy/git-data/
 
 # post-commit 生成离线 bundle 时的中转文件（见 .husky/post-commit）
+# .lock 也要忽略：git bundle 被中途掐断时会残留它
 _git_backup_tmp.bundle
+_git_backup_tmp.bundle.lock
 
 # 美术资源原始文件（AI 生成的中间产物、PSD 等，不入库）
 # 注意：最终用于游戏的资源放 public/assets/，是需要入库的

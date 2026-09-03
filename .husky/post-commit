@@ -2,23 +2,29 @@
 # 每次提交后自动刷新桌面离线 bundle，作为沙箱误删 .git 的兜底恢复源。
 # 直接写绝对路径会踩 git bundle 的 .lock 怪癖，故先在仓库内生成再 mv。
 #
-# ⚠️ 环境坑：本沙箱（2026-08-31 会话）中 `git bundle create --all` 会挂起/极慢。
-# 因此加三层防御：① timeout 限时 ② 后台化不阻塞 ③ 任何失败都不阻断提交。
-# 若某环境确实连 timeout 都不可用，可临时 `mv` 本文件为 no-op，事后须还原。
+# ⚠️ 环境坑（2026-09-03 修订）：
+#   1. `git bundle create --all` 在 relocated gitdir 上要 40–90 秒，超时给 180s 才够；
+#      早期给的 60s 会被中途掐断，留下 `.lock` 与半截 bundle。
+#   2. **不要后台化**（早期版本用 `&`）——提交进程结束时子 shell 会被一并回收，
+#      bundle 生成了但 `mv` 没跑，桌面备份反而不更新。同步执行最稳：
+#      沙箱内提交本来就要 3–7 分钟（lint-staged），多这 90 秒可以接受。
+#   3. 任何失败都不阻断提交本身（post-commit 的退出码不影响已完成的 commit）。
 TMP="./_git_backup_tmp.bundle"
 DEST="/c/Users/Administrator/Desktop/Spidey-Reigns-gitbackup.bundle"
 
-(
-  if command -v timeout >/dev/null 2>&1; then
-    timeout 60 git bundle create "$TMP" --all 2>/dev/null \
-      && timeout 30 git bundle verify "$TMP" >/dev/null 2>&1 \
-      && mv -f "$TMP" "$DEST" 2>/dev/null
-  else
-    git bundle create "$TMP" --all 2>/dev/null \
-      && git bundle verify "$TMP" >/dev/null 2>&1 \
-      && mv -f "$TMP" "$DEST" 2>/dev/null
-  fi
-  rm -f "$TMP" 2>/dev/null
-) >/dev/null 2>&1 &
+cleanup() {
+  rm -f "$TMP" "$TMP.lock" 2>/dev/null
+}
 
+if command -v timeout >/dev/null 2>&1; then
+  timeout 180 git bundle create "$TMP" --all >/dev/null 2>&1 &&
+    timeout 60 git bundle verify "$TMP" >/dev/null 2>&1 &&
+    mv -f "$TMP" "$DEST" >/dev/null 2>&1
+else
+  git bundle create "$TMP" --all >/dev/null 2>&1 &&
+    git bundle verify "$TMP" >/dev/null 2>&1 &&
+    mv -f "$TMP" "$DEST" >/dev/null 2>&1
+fi
+
+cleanup
 exit 0
