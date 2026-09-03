@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { getAsset } from '../content/assets';
+import { getAsset, assetUrl } from '../content/assets';
 import './asset-frame.css';
 
 export interface AssetFrameProps {
@@ -34,7 +34,7 @@ export function AssetFrame({ assetId, label, alt, className }: AssetFrameProps) 
     return (
       <img
         className={`asset-frame asset-frame--image ${className ?? ''}`.trim()}
-        src={asset.path}
+        src={assetUrl(asset.path)}
         alt={alt ?? label ?? assetId}
       />
     );

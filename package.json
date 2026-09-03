@@ -2,7 +2,7 @@
   "name": "spidey-reigns",
   "private": true,
   "version": "0.1.0",
-  "description": "蛛丝王权 —— 以蜘蛛侠为主角的 Reigns 式滑卡治国游戏（个人练习项目，不公开发布，见 docs/adr/ADR-0006-IP边界.md）",
+  "description": "蛛丝王权 —— 以蜘蛛侠为主角的 Reigns 式滑卡治国游戏（公开仓库，发布策略见 docs/adr/ADR-0007-公开发布.md）",
   "type": "module",
   "engines": {
     "node": ">=20"

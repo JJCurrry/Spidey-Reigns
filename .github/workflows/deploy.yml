@@ -1,0 +1,62 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# 最小权限原则：只读仓库内容，Pages 部署需要 pages: write 与 id-token: write。
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只跑一个部署；不取消进行中的（避免半成品上线）。
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 构建并发布
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 配置 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 安装依赖
+        run: npm ci
+
+      # 部署前门禁：与 CI 一致的校验，任一红则不上线（严守不变量 #1/#7 红线）。
+      - name: 类型检查
+        run: npm run typecheck
+
+      - name: Lint（含不变量红线检查）
+        run: npm run lint
+
+      - name: 测试
+        run: npm run test
+
+      - name: 构建（vite base 生产期自动挂 /Spidey-Reigns/）
+        run: npm run build
+
+      - name: 配置 GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: 上传构建产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: 部署到 Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

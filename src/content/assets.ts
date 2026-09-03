@@ -236,3 +236,18 @@ const ASSET_INDEX: Readonly<Record<string, AssetRef>> = Object.freeze(
 export function getAsset(id: string): AssetRef | null {
   return ASSET_INDEX[id] ?? null;
 }
+
+/**
+ * 资源最终 URL：拼接 Vite 的 `base`，使同一份构建产物在三种部署下都能正确加载
+ * `public/assets/` 下的图片：
+ * - 本地 `npm run dev` / Vercel 根域名：`base` 为 `/` → 路径不变；
+ * - GitHub Pages 子路径：`base` 为 `/Spidey-Reigns/` → 拼成 `/Spidey-Reigns/assets/...`。
+ *
+ * `ASSETS` 的路径约定以 `/` 开头；`base` 由 Vite 配置提供（开发期 `/`、生产期按部署平台定）。
+ * 不在此处兜底「资源缺失」——缺失由 `AssetFrame` 按 `getAsset` 返回 null 走程序化占位（ADR-0005）。
+ */
+export function assetUrl(path: string): string {
+  const base = import.meta.env.BASE_URL || '/';
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  return `${cleanBase}${path}`;
+}
